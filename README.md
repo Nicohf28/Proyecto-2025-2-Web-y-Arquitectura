@@ -1,12 +1,48 @@
-# React + Vite
+# Proyecto 2025-2 - Web y Arquitectura
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Este proyecto es parte del trabajo académico del periodo 2025-2.  
+Tiene como objetivo desarrollar una aplicación web utilizando las mejores tecnologías y prácticas.
 
-Currently, two official plugins are available:
+## 🚀 Tecnologías utilizadas
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- [React](https://reactjs.org/) - Biblioteca para interfaces de usuario
+- [Vite](https://vitejs.dev/) - Empaquetador rápido y ligero
+- [JavaScript (ES6+)](https://developer.mozilla.org/es/docs/Web/JavaScript)
+- [CSS3](https://developer.mozilla.org/es/docs/Web/CSS)
+- [HTML5](https://developer.mozilla.org/es/docs/Web/HTML)
+- [ESLint](https://eslint.org/) - Herramienta de linting para código limpio
 
-## Expanding the ESLint configuration
+## 📂 Estructura del proyecto
+├── public/ # Archivos públicos
+├── src/ # Código fuente
+│ ├── assets/ # Imágenes y recursos
+│ ├── App.jsx # Componente principal
+│ ├── main.jsx # Punto de entrada
+│ ├── App.css # Estilos globales
+│ └── index.css # Estilos base
+├── index.html # HTML principal
+├── package.json # Dependencias y scripts
+└── vite.config.js # Configuración de Vite
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+
+## 📦 Instalación y ejecución
+
+  1. Clonar el repositorio:
+     git clone https://github.com/Nicohf28/Proyecto-2025-2-Web-y-Arquitectura.git
+  
+  2. Entrar en el directorio del proyecto.
+    cd Proyecto-2025-2-Web-y-Arquitectura
+  
+  3. Instalar dependendcias.
+    npm install
+  
+  4. Ejecutar en modo desarrollador.
+    npm run dev
+
+🌱 Ramas del proyecto
+main → Rama principal (producción)
+
+prueba → Rama para experimentos y pruebas
+
+👥 Colaboradores
+...

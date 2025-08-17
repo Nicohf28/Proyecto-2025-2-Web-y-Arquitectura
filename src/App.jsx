@@ -20,6 +20,7 @@
 // Nota: el código usa react-bootstrap para mantener el layout responsive y aprovechar Bootstrap.
 
 import React, { useMemo, useState } from 'react';
+import PlaceFactory from './factories/placeFactory';
 import {
   Container,
   Row,
@@ -92,18 +93,18 @@ export default function App() {
     return ['All', ...Array.from(new Set(DATA.filter(d => d.type === filterType).map(d => d.category).filter(Boolean)))];
   }, [filterType]);
 
-  const filtered = useMemo(() => {
-    return DATA.filter(d => {
-      if (filterType !== 'All' && d.type !== filterType) return false;
-      if (filterCategory !== 'All' && d.category !== filterCategory) return false;
-      if (query) {
-        const q = query.toLowerCase();
-        const haystack = `${d.name} ${d.desc} ${d.tags.join(' ')} ${d.neighborhood || d.location || ''}`.toLowerCase();
-        if (!haystack.includes(q)) return false;
-      }
-      return true;
-    });
-  }, [query, filterType, filterCategory]);
+const filtered = useMemo(() => {
+  return DATA.filter(d => {
+    if (filterType !== 'All' && d.type !== filterType) return false;
+    if (filterCategory !== 'All' && d.category !== filterCategory) return false;
+    if (query) {
+      const q = query.toLowerCase();
+      const haystack = `${d.name} ${d.desc} ${d.tags.join(' ')} ${d.neighborhood || d.location || ''}`.toLowerCase();
+      if (!haystack.includes(q)) return false;
+    }
+    return true;
+  }).map(d => PlaceFactory.create(d)); // ← Aquí usamos el Factory
+}, [query, filterType, filterCategory]);
 
   return (
     <>
@@ -181,14 +182,14 @@ export default function App() {
                   <Card className="h-100">
                     <Card.Body className="d-flex flex-column">
                       <div>
-                        <Card.Title>{item.name}</Card.Title>
+                        <Card.Title>{item.getIcon()} {item.name}</Card.Title>
                         <Card.Subtitle className="mb-2 text-muted">{item.category} • {item.neighborhood || item.location}</Card.Subtitle>
                       </div>
 
                       <Card.Text style={{ flex: 1 }}>{item.desc}</Card.Text>
 
                       <div className="mb-2">
-                        {(item.tags || []).map(t => <Badge bg="info" text="dark" className="me-1" key={t}>{t}</Badge>)}
+                        {(item.tags || []).map(t => (<Badge bg={item.getColor()} text="dark" className="me-1" key={t}>{t}</Badge>))}
                       </div>
 
                       <div className="mt-auto text-end">
@@ -211,7 +212,7 @@ export default function App() {
           <p><strong>Categoría:</strong> {selected?.category}</p>
           <p><strong>Ubicación:</strong> {selected?.neighborhood || selected?.location}</p>
           <p>{selected?.desc}</p>
-          <div>{(selected?.tags || []).map(t => <Badge bg="secondary" className="me-1" key={t}>{t}</Badge>)}</div>
+          <div>{(selected?.tags || []).map(t => (<Badge bg={selected?.getColor?.() || 'secondary'} className="me-1" key={t}>{t}</Badge>))}</div>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setSelected(null)}>Cerrar</Button>

@@ -20,6 +20,8 @@
 // Nota: el código usa react-bootstrap para mantener el layout responsive y aprovechar Bootstrap.
 
 import React, { useMemo, useState } from 'react';
+import PlaceCard from "./components/PlaceCard";
+import withBadge from "./decorators/withBadge.jsx";
 import PlaceFactory from './factories/placeFactory';
 import {
   Container,
@@ -36,6 +38,8 @@ import {
   Modal,
 } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
+const PlaceCardWithBadge = withBadge(PlaceCard, "Nuevo");
+
 
 // Datos: lista aplanada con tipo y categoría (subcategoría)
 const DATA = [
@@ -81,6 +85,9 @@ const DATA = [
 ];
 
 export default function App() {
+  const place = { name: "Trattoria Italia", description: "Trattoria acogedora con menú tradicional y buenos vinos" };
+  const place2 = { name: "Parque Metropolitano Timiza", description: "Gran parque metropolitano con canchas y senderos." };
+  
   const [query, setQuery] = useState('');
   const [filterType, setFilterType] = useState('All');
   const [filterCategory, setFilterCategory] = useState('All');
@@ -92,6 +99,7 @@ export default function App() {
     if (filterType === 'All') return ['All', ...Array.from(new Set(DATA.map(d => d.category).filter(Boolean)))];
     return ['All', ...Array.from(new Set(DATA.filter(d => d.type === filterType).map(d => d.category).filter(Boolean)))];
   }, [filterType]);
+  
 
 const filtered = useMemo(() => {
   return DATA.filter(d => {
@@ -106,8 +114,10 @@ const filtered = useMemo(() => {
   }).map(d => PlaceFactory.create(d)); // ← Aquí usamos el Factory
 }, [query, filterType, filterCategory]);
 
+
   return (
     <>
+    
       <Navbar bg="light" expand="lg" className="mb-3">
         <Container>
           <Navbar.Brand href="#">Bogotá Places</Navbar.Brand>
@@ -130,9 +140,11 @@ const filtered = useMemo(() => {
                 aria-label="Buscar"
               />
             </Form>
+            
           </Navbar.Collapse>
         </Container>
       </Navbar>
+      
 
       <Container>
         <Breadcrumb>
@@ -169,6 +181,11 @@ const filtered = useMemo(() => {
               <h6>Resumen</h6>
               <p className="small text-muted">Resultados: <strong>{filtered.length}</strong></p>
             </div>
+            <div className="mt-4">
+      <PlaceCard place={place} />
+      <br />
+      <PlaceCardWithBadge place={place2} />
+    </div>
           </Col>
 
           <Col md={9}>

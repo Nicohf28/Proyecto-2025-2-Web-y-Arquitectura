@@ -1,0 +1,12 @@
+# Dockerfile.frontend.dev (dev server)
+FROM node:20-alpine
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci
+COPY . .
+
+# Exponer el puerto por defecto de Vite
+EXPOSE 5173
+
+# Vite debe escuchas en 0.0.0.0 para que sea accesible desde fuera del contenedor
+CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]

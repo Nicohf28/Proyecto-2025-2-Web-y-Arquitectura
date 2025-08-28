@@ -61,63 +61,67 @@ cd Proyecto-2025-2-Web-y-Arquitectura
 
 ### 2. Levantar con Docker
 docker run -d --name frontend -p 5173:80 frontend-prod:1.0
+
 docker run -d --name catalog -p 4001:4001 catalog-service:1.0
+
 docker run -d --name reviews -p 4002:4002 reviews-service:1.0
 
 # 3. Levantar con Kubernetes
 kubectl apply -f k8s/
+
 kubectl get pods
+
 kubectl get svc
 
 ## 📂 Estructura del Repositorio  
 
-Proyecto-2025-2-Web-y-Arquitectura/
-├── k8s/ # Archivos de configuración para Kubernetes
-│ ├── catalog-deployment.yaml # Deployment para catalog-service
-│ ├── frontend-deployment.yaml # Deployment para frontend
-│ └── reviews-deployment.yaml # Deployment para reviews-service
-│
-├── server/ # Microservicios del backend
-│ ├── catalog-service/ # Servicio de catálogo
-│ │ └── Dockerfile
-│ └── reviews-service/ # Servicio de reseñas
-│ └── Dockerfile
-│
-├── src/ # Código fuente del frontend (React + Vite)
-│ │ App.css
-│ │ App.jsx
-│ │ index.css
-│ │ main.jsx
-│ │
-│ ├── api/
-│ │ └── client.js # Cliente para consumo de APIs
-│ │
-│ ├── assets/
-│ │ └── react.svg # Recurso estático
-│ │
-│ ├── components/
-│ │ └── PlaceCard.jsx # Componente de tarjeta para lugares
-│ │
-│ ├── decorators/
-│ │ └── withBadge.jsx # Decorator que envuelve componentes
-│ │
-│ └── factories/
-│ └── placeFactory.js # Factory que crea componentes de lugares
-│
-├── Dockerfile # Dockerfile del frontend
-└── README.md
+El proyecto se organiza en las siguientes carpetas y archivos principales:
+
+- **k8s/**  
+  Contiene los manifiestos de Kubernetes:  
+  - `catalog-deployment.yaml` → Deployment para el servicio de catálogo  
+  - `frontend-deployment.yaml` → Deployment para el frontend  
+  - `reviews-deployment.yaml` → Deployment para el servicio de reseñas  
+
+- **server/**  
+  Microservicios del backend:  
+  - `catalog-service/` → Servicio de catálogo (incluye su `Dockerfile`)  
+  - `reviews-service/` → Servicio de reseñas (incluye su `Dockerfile`)  
+
+- **src/**  
+  Código fuente del frontend (React + Vite):  
+  - Archivos principales: `App.css`, `App.jsx`, `index.css`, `main.jsx`  
+  - **api/** → Cliente para consumo de APIs (`client.js`)  
+  - **assets/** → Recursos estáticos (`react.svg`)  
+  - **components/** → Componentes reutilizables (`PlaceCard.jsx`)  
+  - **decorators/** → Decoradores para componentes (`withBadge.jsx`)  
+  - **factories/** → Factories para creación de elementos (`placeFactory.js`)  
+
+- **Dockerfile** → Dockerfile del frontend  
+- **README.md** → Documentación principal del proyecto  
 
 ## 👥 Autores
 Dana Valeria Urquijo Ospitia 
+
 Daniel Esteban Mora Rodríguez 
+
 Juan David Castro 
+
 Karen Sofía Rueda Piñeros 
+
 Mayra Alejandra Salamanca Chaves 
+
 Nicolás Hernández Flórez 
+
 Osmar Santiago Aguirre Durán 
+
 Thomas Alejandro Jutinico Jaramillo 
 
+## Apoyado por:
 Universidad Libre – Sede Bosque 
+
 ING22037: Arquitectura de la Información 
+
 Ing. Linda Caicedo 
+
 Agosto, 2025 

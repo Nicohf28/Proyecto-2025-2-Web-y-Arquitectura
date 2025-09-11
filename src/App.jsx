@@ -113,7 +113,7 @@ export default function App() {
     <Navbar bg="dark" variant="dark" expand="lg" className="shadow-sm w-100 mb-2 ">
       <Container fluid className="px-1">
         <Navbar.Brand href="#">
-          <i className="bi bi-geo-alt-fill me-2" style={{ marginLeft: '30px' }}></i>Bogotá Places
+          <i className="bi bi-geo-alt-fill me-2" style={{ marginLeft: '30px' }}></i>BogToWorld
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="main-nav" />
         <Navbar.Collapse id="main-nav">

@@ -31,6 +31,16 @@ export default function App() {
   const [reviews, setReviews] = useState(null);
   const [loadingReviews, setLoadingReviews] = useState(false);
 
+  const itemsPerPage = 9;
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const paginatedData = data.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  const totalPages = Math.ceil(data.length / itemsPerPage);
+
   // Cargar tipos al inicio
   useEffect(() => {
     (async () => {
@@ -98,160 +108,249 @@ export default function App() {
 
   // Resumen contadores (derivado del resultado actual)
   const resultsCount = data.length;
-
   return (
-    <>
-      <Navbar bg="light" expand="lg" className="mb-3">
-        <Container>
-          <Navbar.Brand href="#">Bogotá Places</Navbar.Brand>
-          <Navbar.Toggle aria-controls="main-nav" />
-          <Navbar.Collapse id="main-nav">
-            <Nav className="me-auto">
-              <Nav.Link href="#" onClick={() => { setFilterType('All'); setFilterCategory('All'); setQuery(''); }}>Inicio</Nav.Link>
-              <Nav.Link href="#" onClick={() => { setFilterType('Restaurante'); setFilterCategory('All'); }}>Restaurantes</Nav.Link>
-              <Nav.Link href="#" onClick={() => { setFilterType('Parque'); setFilterCategory('All'); }}>Parques</Nav.Link>
-              <Nav.Link href="#" onClick={() => { setFilterType('Parque de Diversiones'); setFilterCategory('All'); }}>Diversiones</Nav.Link>
-              <Nav.Link href="#" onClick={() => { setFilterType('Otro'); setFilterCategory('All'); }}>Otros</Nav.Link>
-            </Nav>
-            <Form className="d-flex" onSubmit={(e) => e.preventDefault()}>
-              <FormControl
-                type="search"
-                placeholder="Buscar lugares, tags, barrios..."
-                className="me-2"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                aria-label="Buscar"
-              />
-            </Form>
-          </Navbar.Collapse>
-        </Container>
-      </Navbar>
+  <>
+    <Navbar bg="dark" variant="dark" expand="lg" className="shadow-sm w-100 mb-2 ">
+      <Container fluid className="px-1">
+        <Navbar.Brand href="#">
+          <i className="bi bi-geo-alt-fill me-2" style={{ marginLeft: '30px' }}></i>BogToWorld
+        </Navbar.Brand>
+        <Navbar.Toggle aria-controls="main-nav" />
+        <Navbar.Collapse id="main-nav">
+          <Nav className="me-auto">
+            {['All', 'Restaurante', 'Parque', 'Parque de Diversiones', 'Otro'].map((label, i) => (
+              <Nav.Link
+                key={i}
+                href="#"
+                onClick={() => {
+                  setFilterType(label === 'Inicio' ? 'All' : label);
+                  setFilterCategory('All');
+                  setQuery('');
+                  setCurrentPage(1);
+                }}
+              >
+                {label}
+              </Nav.Link>
+            ))}
+          </Nav>
+          <Form className="d-flex" onSubmit={(e) => e.preventDefault()}>
+            <FormControl
+              type="search"
+              placeholder="Buscar lugares, tags, barrios..."
+              className="me-2"
+              style={{ width: '350px' }}
+              value={query}
+              onChange={(e) => {
+                setQuery(e.target.value);
+                setCurrentPage(1);
+              }}
+            />
+          </Form>
+        </Navbar.Collapse>
+      </Container>
+    </Navbar>
 
-      <Container>
-        <Breadcrumb>
-          <Breadcrumb.Item href="#" onClick={() => { setFilterType('All'); setFilterCategory('All'); setQuery(''); }}>Inicio</Breadcrumb.Item>
-          {filterType !== 'All' && <Breadcrumb.Item active>{filterType}</Breadcrumb.Item>}
-          {filterCategory !== 'All' && <Breadcrumb.Item active>{filterCategory}</Breadcrumb.Item>}
-        </Breadcrumb>
+    <Container fluid className="px-3">
+      <Breadcrumb style={{ marginLeft: '10px' }}>
+        <Breadcrumb.Item href="#" onClick={() => {
+          setFilterType('All');
+          setFilterCategory('All');
+          setQuery('');
+          setCurrentPage(1);
+        }}>Inicio</Breadcrumb.Item>
+        {filterType !== 'All' && <Breadcrumb.Item active>{filterType}</Breadcrumb.Item>}
+        {filterCategory !== 'All' && <Breadcrumb.Item active>{filterCategory}</Breadcrumb.Item>}
+      </Breadcrumb>
 
-        <Row className="mb-3">
-          <Col md={3} className="mb-3">
-            <h5>Filtros</h5>
+      <Row className="mb-3">
+        <Col md={3}>
+          <div
+            className="bg-light rounded-4 p-3 shadow-sm border-0"
+            style={{ height: '90%' }}
+          >
+            <h5 className="mb-4 text-dark">
+              <i className="bi bi-sliders me-2"></i>Filtros
+            </h5>
 
-            <Form.Group className="mb-2">
-              <Form.Label>Tipo</Form.Label>
-              <Form.Select value={filterType} onChange={(e) => { setFilterType(e.target.value); setFilterCategory('All'); }}>
+            <Form.Group className="mb-4">
+              <Form.Label className="fw-semibold text-secondary">
+                <i className="bi bi-filter-circle me-2"></i>Tipo
+              </Form.Label>
+              <Form.Select
+                value={filterType}
+                onChange={(e) => {
+                  setFilterType(e.target.value);
+                  setFilterCategory('All');
+                  setCurrentPage(1);
+                }}
+              >
                 {types.map(t => <option key={t} value={t}>{t}</option>)}
               </Form.Select>
             </Form.Group>
 
-            <Form.Group className="mb-2">
-              <Form.Label>Categoría</Form.Label>
-              <Form.Select value={filterCategory} onChange={(e) => setFilterCategory(e.target.value)}>
+            <Form.Group className="mb-4">
+              <Form.Label className="fw-semibold text-secondary">
+                <i className="bi bi-tags me-2"></i>Categoría
+              </Form.Label>
+              <Form.Select
+                value={filterCategory}
+                onChange={(e) => {
+                  setFilterCategory(e.target.value);
+                  setCurrentPage(1);
+                }}
+              >
                 {categories.map(c => <option key={c} value={c}>{c}</option>)}
               </Form.Select>
             </Form.Group>
 
-            <div className="mb-2">
-              <h6>Etiquetas rápidas</h6>
+            <div className="mb-4">
+              <h6 className="fw-semibold text-secondary mb-2">
+                <i className="bi bi-lightning-fill me-2"></i>Etiquetas rápidas
+              </h6>
               {['Oferta', 'Nuevo', 'Familiar', 'Pet-friendly'].map(tag => (
-                <Badge key={tag} bg="secondary" pill style={{ cursor: 'pointer', marginRight: 6 }} onClick={() => setQuery(tag)}>{tag}</Badge>
+                <Badge
+                  key={tag}
+                  bg="info"
+                  pill
+                  className="me-2 mb-2"
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => {
+                    setQuery(tag);
+                    setCurrentPage(1);
+                  }}
+                >
+                  {tag}
+                </Badge>
               ))}
             </div>
 
-            <div className="mt-3">
-              <h6>Resumen</h6>
-              <p className="small text-muted">Resultados: <strong>{resultsCount}</strong></p>
-            </div>
+            <hr />
 
-            {/* Ejemplos con HOC */}
-            <div className="mt-4">
+            <div className="mt-3 text-muted">
+              <i className="bi bi-bar-chart-fill me-2"></i>
+              Resultados encontrados: <strong>{resultsCount}</strong>
+            </div>
+            <div className="mt-5">
+              <h6 className="fw-semibold text-secondary mb-4">Ejemplos destacados</h6>
               <PlaceCard place={examplePlace} />
-              <br />
-              <PlaceCardWithBadge place={examplePlace2} />
+              <div className="mt-3">
+                <PlaceCardWithBadge place={examplePlace2} />
+              </div>
             </div>
-          </Col>
+          </div>
+        </Col>
 
-          <Col md={9}>
-            {error && <Alert variant="danger" className="mb-3">{error}</Alert>}
+        <Col md={9}>
+          <div className="d-flex flex-column justify-content-between" style={{ height: '100%' }}>
+            {error && <Alert variant="danger">{error}</Alert>}
             {loading ? (
               <div className="d-flex justify-content-center py-5">
                 <Spinner animation="border" role="status" />
               </div>
             ) : (
-              <Row>
-                {data.length === 0 ? (
-                  <Col>
-                    <p>No se encontraron resultados. Intenta borrar filtros o buscar otra cosa.</p>
-                  </Col>
-                ) : data.map(item => (
-                  <Col key={item.id} xs={12} sm={6} lg={4} className="mb-3">
-                    <Card className="h-100">
-                      <Card.Body className="d-flex flex-column">
-                        <div>
-                          <Card.Title>{item.getIcon()} {item.name}</Card.Title>
+              <>
+                <Row>
+                  {paginatedData.length === 0 ? (
+                    <Col>
+                      <p>No se encontraron resultados. Intenta borrar filtros o buscar otra cosa.</p>
+                    </Col>
+                  ) : paginatedData.map(item => (
+                    <Col key={item.id} xs={12} sm={6} lg={4} className="mb-4">
+                      <Card className="h-100 shadow-sm border-0 rounded-4 overflow-hidden hover-scale">
+                        {item.imageUrl && (
+                          <Card.Img
+                            variant="top"
+                            src={item.imageUrl}
+                            alt={item.name}
+                            style={{ height: '180px', objectFit: 'cover' }}
+                          />
+                        )}
+                        <Card.Body className="d-flex flex-column bg-light">
+                          <Card.Title className="fs-5 fw-bold text-dark">
+                            {item.getIcon()} {item.name}
+                          </Card.Title>
                           <Card.Subtitle className="mb-2 text-muted">
                             {item.category} • {item.neighborhood || item.location}
                           </Card.Subtitle>
-                        </div>
+                          <Card.Text className="text-secondary" style={{ flex: 1 }}>
+                            {item.desc}
+                          </Card.Text>
+                          <div className="mb-2">
+                            {(item.tags || []).map(t => (
+                              <Badge bg={item.getColor(t)} className="me-1" key={t}>{t}</Badge>
+                            ))}
+                          </div>
+                          {item.reviews?.avg && (
+                            <div className="mb-2 text-warning">
+                              ⭐ {item.reviews.avg.toFixed(1)} ({item.reviews.count})
+                            </div>
+                          )}
+                          <div className="mt-auto text-end">
+                            <Button variant="outline-primary" size="sm" onClick={() => setSelected(item)}>
+                              Ver detalles
+                            </Button>
+                          </div>
+                        </Card.Body>
+                      </Card>
+                    </Col>
+                  ))}
+                </Row>
 
-                        <Card.Text style={{ flex: 1 }}>{item.desc}</Card.Text>
-
-                        <div className="mb-2">
-                          {(item.tags || []).map(t => (
-                            <Badge bg={item.getColor(t)} text="dark" className="me-1" key={t}>{t}</Badge>
-                          ))}
-                        </div>
-
-                        <div className="mt-auto text-end">
-                          <Button variant="primary" size="sm" onClick={() => setSelected(item)}>Ver detalles</Button>
-                        </div>
-                      </Card.Body>
-                    </Card>
-                  </Col>
-                ))}
-              </Row>
+                <div className="d-flex justify-content-center mt-1" style={{ marginBottom: '20px' }}>
+                  {[...Array(totalPages)].map((_, index) => (
+                    <Button
+                      key={index}
+                      variant={currentPage === index + 1 ? 'primary' : 'outline-secondary'}
+                      className="me-2"
+                      size="sm"
+                      onClick={() => setCurrentPage(index + 1)}
+                    >
+                      {index + 1}
+                    </Button>
+                  ))}
+                </div>
+              </>
             )}
-          </Col>
-        </Row>
-      </Container>
-
-      {/* Modal de detalle con reseñas */}
-      <Modal show={!!selected} onHide={() => setSelected(null)}>
-        <Modal.Header closeButton>
-          <Modal.Title>{selected?.name}</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <p><strong>Categoría:</strong> {selected?.category}</p>
-          <p><strong>Ubicación:</strong> {selected?.neighborhood || selected?.location}</p>
-          <p>{selected?.desc}</p>
-          <div className="mb-2">
-            {(selected?.tags || []).map(t => (
-              <Badge bg={selected?.getColor?.(t) || 'secondary'} className="me-1" key={t}>{t}</Badge>
-            ))}
           </div>
+        </Col>
+      </Row>
+    </Container>
 
-          <hr />
-          <h6 className="mb-2">Reseñas</h6>
-          {loadingReviews ? (
-            <Spinner animation="border" size="sm" />
-          ) : reviews?.avg ? (
-            <>
-              <p className="mb-1"><strong>Rating:</strong> {reviews.avg.toFixed(1)} ⭐ ({reviews.count})</p>
-              <ul className="mb-0">
-                {reviews.comments.slice(0,3).map((c, idx) => (
-                  <li key={idx}><strong>{c.user}:</strong> {c.text}</li>
-                ))}
-              </ul>
-            </>
-          ) : (
-            <p className="text-muted">Aún no hay reseñas para este lugar.</p>
-          )}
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setSelected(null)}>Cerrar</Button>
-        </Modal.Footer>
-      </Modal>
-    </>
-  );
-}
+    <Modal show={!!selected} onHide={() => setSelected(null)} centered>
+      <Modal.Header closeButton>
+        <Modal.Title>{selected?.name}</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <p><strong>Categoría:</strong> {selected?.category}</p>
+        <p><strong>Ubicación:</strong> {selected?.neighborhood || selected?.location}</p>
+        <p>{selected?.desc}</p>
+        <div className="mb-2">
+          {(selected?.tags || []).map(t => (
+            <Badge bg={selected?.getColor?.(t) || 'secondary'} className="me-1" key={t}>{t}</Badge>
+          ))}
+        </div>
+        <hr />
+        <h6>Reseñas</h6>
+        {loadingReviews ? (
+          <Spinner animation="border" size="sm" />
+        ) : reviews?.avg ? (
+          <>
+            <p><strong>Rating:</strong> {reviews.avg.toFixed(1)} ⭐ ({reviews.count})</p>
+            <ul>
+              {reviews.comments.slice(0, 3).map((c, idx) => (
+                <li key={idx}><strong>{c.user}:</strong> {c.text}</li>
+              ))}
+            </ul>
+          </>
+        ) : (
+          <p className="text-muted">Aún no hay reseñas para este lugar.</p>
+        )}
+      </Modal.Body>
+      <Modal.Footer>
+        <Button variant="secondary" onClick={() => setSelected(null)}>Cerrar</Button>
+      </Modal.Footer>
+    </Modal>
+  </>
+);
+
+};

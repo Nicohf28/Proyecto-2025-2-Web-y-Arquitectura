@@ -1,3 +1,5 @@
+// Clase base Place utilizada en la creación de instancias de lugares haciendo uso de el patrón Factory Method.
+// Permite encapsular atributos comunes y extender funcionalidad según el tipo de lugar (Restaurante, Parque, etc.). 
 class Place {
   constructor(data) {
     this.id = data.id;
@@ -10,11 +12,11 @@ class Place {
   }
 
   getIcon() {
-    return '📍'; // Icono genérico
+    return '📍'; 
   }
 
   getColor() {
-    return 'secondary'; // Color genérico para Badge
+    return 'secondary'; 
   }
 }
 
